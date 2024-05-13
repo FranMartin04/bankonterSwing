@@ -26,12 +26,13 @@ public class PanelPrincipal extends JPanel {
 	 * Create the panel.
 	 */
 	public static void main(String[] args) {
-        JFrame frame = new JFrame("Panel Principal");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 300);
-        frame.getContentPane().add(new PanelPrincipal());
-        frame.setVisible(true);
-    }
+		JFrame frame = new JFrame("Panel Principal");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(600, 300);
+		frame.getContentPane().add(new PanelPrincipal());
+		frame.setVisible(true);
+	}
+
 	public PanelPrincipal() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -185,8 +186,8 @@ public class PanelPrincipal extends JPanel {
 			public void stateChanged(ChangeEvent e) {
 				int valorMaximo = (int) jspinner.getValue();
 				jslider.setMaximum(valorMaximo);
-				
-			} 
+
+			}
 		});
 	}
 
