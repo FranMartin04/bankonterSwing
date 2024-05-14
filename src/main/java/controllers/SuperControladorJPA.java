@@ -27,7 +27,7 @@ public class SuperControladorJPA {
 	 */
 	public SuperControladorJPA(Class entidadControlada, String unidadPersistencia) {
 		if (entityManagerFactory == null) {
-			entityManagerFactory = Persistence.createEntityManagerFactory(unidadPersistencia);
+			entityManagerFactory = Persistence.createEntityManagerFactory("bankonterSwing");
 		}
 		this.entidadControlada = entidadControlada;
 		this.nombreEntidadControlada = this.entidadControlada.getName();

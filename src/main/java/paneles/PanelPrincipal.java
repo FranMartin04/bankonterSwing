@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.List;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 
 import controllers.ControladorContratoJPA;
 import entities.Contrato;
@@ -26,8 +28,11 @@ import javax.swing.JFrame;
 import javax.swing.JSpinner;
 import javax.swing.JSlider;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JToolBar;
 import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class PanelPrincipal extends JPanel {
 
@@ -38,6 +43,7 @@ public class PanelPrincipal extends JPanel {
 	private JSlider jslider;
 	private JLabel lblSlider;
 	private JFormattedTextField jftf;
+	private static List<Contrato> contratos = null;
 
 	/**
 	 * Create the panel.
@@ -93,6 +99,11 @@ public class PanelPrincipal extends JPanel {
 		toolBar.add(btnGuardar);
 		
 		JButton btnEliminar = new JButton("");
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		btnEliminar.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/eliminar.png"));
 		toolBar.add(btnEliminar);
 
@@ -198,6 +209,26 @@ public class PanelPrincipal extends JPanel {
 		jtfTipoContrato.setColumns(10);
 
 		JButton btnTipoContrato = new JButton("Selecciona");
+		btnTipoContrato.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+        		JDialog dialogo = new JDialog();
+				// El usuario no puede redimensionar el diálogo
+				dialogo.setResizable(true);
+				// título del díalogo
+				dialogo.setTitle("Tipo Contrato");
+				// Introducimos el panel creado sobre el diálogo
+				dialogo.setContentPane(new PanelTipoContrato());
+				// Empaquetar el di�logo hace que todos los componentes ocupen el espacio que deben y el lugar adecuado
+				dialogo.pack();
+				// El usuario no puede hacer clic sobre la ventana padre, si el Di�logo es modal
+				dialogo.setModal(true);
+				// Centro el di�logo en pantalla
+				dialogo.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - dialogo.getWidth()/2, 
+						(Toolkit.getDefaultToolkit().getScreenSize().height)/2 - dialogo.getHeight()/2);
+				// Muestro el di�logo en pantalla
+				dialogo.setVisible(true);
+			}
+		});
 		GridBagConstraints gbc_btnTipoContrato = new GridBagConstraints();
 		gbc_btnTipoContrato.insets = new Insets(0, 0, 5, 5);
 		gbc_btnTipoContrato.gridx = 6;
@@ -221,6 +252,26 @@ public class PanelPrincipal extends JPanel {
 		add(lblUsuario, gbc_lblUsuario);
 
 		JButton btnUsuario = new JButton("Selecciona");
+		btnUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+        		JDialog dialogo = new JDialog();
+				// El usuario no puede redimensionar el diálogo
+				dialogo.setResizable(true);
+				// título del díalogo
+				dialogo.setTitle("Usuario");
+				// Introducimos el panel creado sobre el diálogo
+				dialogo.setContentPane(new PanelUsuario());
+				// Empaquetar el di�logo hace que todos los componentes ocupen el espacio que deben y el lugar adecuado
+				dialogo.pack();
+				// El usuario no puede hacer clic sobre la ventana padre, si el Di�logo es modal
+				dialogo.setModal(true);
+				// Centro el di�logo en pantalla
+				dialogo.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - dialogo.getWidth()/2, 
+						(Toolkit.getDefaultToolkit().getScreenSize().height)/2 - dialogo.getHeight()/2);
+				// Muestro el di�logo en pantalla
+				dialogo.setVisible(true);
+			}
+		});
 		GridBagConstraints gbc_btnUsuario = new GridBagConstraints();
 		gbc_btnUsuario.insets = new Insets(0, 0, 0, 5);
 		gbc_btnUsuario.gridx = 6;
@@ -229,6 +280,7 @@ public class PanelPrincipal extends JPanel {
 
 		sincronizarSpinnerYSlider();
 		cargarPrimero();
+
 	}
 
 	public void sincronizarSpinnerYSlider() {
@@ -269,8 +321,27 @@ public class PanelPrincipal extends JPanel {
 		jftf.setValue(new Date());
 		return jftf;
 	}
-	private void cargarPrimero() {
-	 ControladorContratoJPA.getInstance().findFirst();
+	public static List<Contrato> getPrimerContrato () {
+		if (contratos == null) {
+			contratos = (List<Contrato>) ControladorContratoJPA
+					.getInstance().findFirst();
+		}
+		return contratos;
+
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public void cargarPrimero() {
+
+		List<Contrato> contratos = getPrimerContrato();
+		Contrato primerContrato = contratos.get(0);
+        jtfDescripcion.setText(primerContrato.getDescripcion());
+
+
+	}
+
 
 }
