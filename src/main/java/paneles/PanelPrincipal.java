@@ -3,11 +3,24 @@ package paneles;
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import controllers.ControladorContratoJPA;
+import entities.Contrato;
+
+
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JSpinner;
@@ -23,6 +36,8 @@ public class PanelPrincipal extends JPanel {
 	private JTextField jtfTipoContrato;
 	private JSpinner jspinner;
 	private JSlider jslider;
+	private JLabel lblSlider;
+	private JFormattedTextField jftf;
 
 	/**
 	 * Create the panel.
@@ -37,48 +52,49 @@ public class PanelPrincipal extends JPanel {
 
 	public PanelPrincipal() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0 };
-		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
 
 		JToolBar toolBar = new JToolBar();
 		GridBagConstraints gbc_toolBar = new GridBagConstraints();
+		gbc_toolBar.fill = GridBagConstraints.HORIZONTAL;
 		gbc_toolBar.anchor = GridBagConstraints.WEST;
 		gbc_toolBar.gridwidth = 7;
-		gbc_toolBar.insets = new Insets(0, 0, 5, 0);
+		gbc_toolBar.insets = new Insets(0, 0, 5, 5);
 		gbc_toolBar.gridx = 0;
 		gbc_toolBar.gridy = 0;
 		add(toolBar, gbc_toolBar);
 
-		JButton btnNewButton_1 = new JButton("");
-		btnNewButton_1.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/gotostart.png"));
-		toolBar.add(btnNewButton_1);
+		JButton btnStart = new JButton("");
+		btnStart.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/gotostart.png"));
+		toolBar.add(btnStart);
 
-		JButton btnNewButton_2 = new JButton("");
-		btnNewButton_2.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/previous.png"));
-		toolBar.add(btnNewButton_2);
+		JButton btnPrevio = new JButton("");
+		btnPrevio.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/previous.png"));
+		toolBar.add(btnPrevio);
 
-		JButton btnNewButton_3 = new JButton("");
-		btnNewButton_3.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/next.png"));
-		toolBar.add(btnNewButton_3);
+		JButton btnSiguiente = new JButton("");
+		btnSiguiente.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/next.png"));
+		toolBar.add(btnSiguiente);
 		
-		JButton btnNewButton_4 = new JButton("");
-		btnNewButton_4.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/gotoend.png"));
-		toolBar.add(btnNewButton_4);
+		JButton btnUltimo = new JButton("");
+		btnUltimo.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/gotoend.png"));
+		toolBar.add(btnUltimo);
 		
-		JButton btnNewButton_5 = new JButton("");
-		btnNewButton_5.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/nuevo.png"));
-		toolBar.add(btnNewButton_5);
+		JButton btnNuevo = new JButton("");
+		btnNuevo.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/nuevo.png"));
+		toolBar.add(btnNuevo);
 		
-		JButton btnNewButton_6 = new JButton("");
-		btnNewButton_6.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/guardar.png"));
-		toolBar.add(btnNewButton_6);
+		JButton btnGuardar = new JButton("");
+		btnGuardar.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/guardar.png"));
+		toolBar.add(btnGuardar);
 		
-		JButton btnNewButton_7 = new JButton("");
-		btnNewButton_7.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/eliminar.png"));
-		toolBar.add(btnNewButton_7);
+		JButton btnEliminar = new JButton("");
+		btnEliminar.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/eliminar.png"));
+		toolBar.add(btnEliminar);
 
 		JLabel lblNewLabel = new JLabel("Contrato");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
@@ -98,7 +114,7 @@ public class PanelPrincipal extends JPanel {
 		jtfDescripcion = new JTextField();
 		GridBagConstraints gbc_jtfDescripcion = new GridBagConstraints();
 		gbc_jtfDescripcion.gridwidth = 6;
-		gbc_jtfDescripcion.insets = new Insets(0, 0, 5, 0);
+		gbc_jtfDescripcion.insets = new Insets(0, 0, 5, 5);
 		gbc_jtfDescripcion.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jtfDescripcion.gridx = 1;
 		gbc_jtfDescripcion.gridy = 2;
@@ -113,16 +129,15 @@ public class PanelPrincipal extends JPanel {
 		gbc_lblNewLabel_2.gridy = 3;
 		add(lblNewLabel_2, gbc_lblNewLabel_2);
 
-		JFormattedTextField jftfFecha = new JFormattedTextField();
 		GridBagConstraints gbc_jftfFecha = new GridBagConstraints();
 		gbc_jftfFecha.gridwidth = 6;
-		gbc_jftfFecha.insets = new Insets(0, 0, 5, 0);
+		gbc_jftfFecha.insets = new Insets(0, 0, 5, 5);
 		gbc_jftfFecha.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jftfFecha.gridx = 1;
 		gbc_jftfFecha.gridy = 3;
-		add(jftfFecha, gbc_jftfFecha);
+		add(getJFormattedTextFieldDatePersonalizado(), gbc_jftfFecha);
 
-		JLabel lblNewLabel_4 = new JLabel("Limite:");
+		JLabel lblNewLabel_4 = new JLabel("Saldo:");
 		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
 		gbc_lblNewLabel_4.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
@@ -134,12 +149,12 @@ public class PanelPrincipal extends JPanel {
 		GridBagConstraints gbc_jspinner = new GridBagConstraints();
 		gbc_jspinner.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jspinner.gridwidth = 6;
-		gbc_jspinner.insets = new Insets(0, 0, 5, 0);
+		gbc_jspinner.insets = new Insets(0, 0, 5, 5);
 		gbc_jspinner.gridx = 1;
 		gbc_jspinner.gridy = 4;
 		add(jspinner, gbc_jspinner);
 
-		JLabel lblNewLabel_5 = new JLabel("Saldo:");
+		JLabel lblNewLabel_5 = new JLabel("Limite:");
 		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
 		gbc_lblNewLabel_5.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
@@ -151,10 +166,17 @@ public class PanelPrincipal extends JPanel {
 		GridBagConstraints gbc_jslider = new GridBagConstraints();
 		gbc_jslider.fill = GridBagConstraints.BOTH;
 		gbc_jslider.gridwidth = 6;
-		gbc_jslider.insets = new Insets(0, 0, 5, 0);
+		gbc_jslider.insets = new Insets(0, 0, 5, 5);
 		gbc_jslider.gridx = 1;
 		gbc_jslider.gridy = 5;
 		add(jslider, gbc_jslider);
+		
+		lblSlider = new JLabel("");
+		GridBagConstraints gbc_lblSlider = new GridBagConstraints();
+		gbc_lblSlider.insets = new Insets(0, 0, 5, 0);
+		gbc_lblSlider.gridx = 7;
+		gbc_lblSlider.gridy = 5;
+		add(lblSlider, gbc_lblSlider);
 
 		JLabel lblNewLabel_6 = new JLabel("TipoContrato:");
 		GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
@@ -177,7 +199,7 @@ public class PanelPrincipal extends JPanel {
 
 		JButton btnTipoContrato = new JButton("Selecciona");
 		GridBagConstraints gbc_btnTipoContrato = new GridBagConstraints();
-		gbc_btnTipoContrato.insets = new Insets(0, 0, 5, 0);
+		gbc_btnTipoContrato.insets = new Insets(0, 0, 5, 5);
 		gbc_btnTipoContrato.gridx = 6;
 		gbc_btnTipoContrato.gridy = 6;
 		add(btnTipoContrato, gbc_btnTipoContrato);
@@ -185,27 +207,28 @@ public class PanelPrincipal extends JPanel {
 		JLabel lblNewLabel_7 = new JLabel("Usuario:");
 		GridBagConstraints gbc_lblNewLabel_7 = new GridBagConstraints();
 		gbc_lblNewLabel_7.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_7.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_7.insets = new Insets(0, 0, 0, 5);
 		gbc_lblNewLabel_7.gridx = 0;
 		gbc_lblNewLabel_7.gridy = 7;
 		add(lblNewLabel_7, gbc_lblNewLabel_7);
 
-		JLabel lblNewLabel_8 = new JLabel("New label");
-		GridBagConstraints gbc_lblNewLabel_8 = new GridBagConstraints();
-		gbc_lblNewLabel_8.gridwidth = 5;
-		gbc_lblNewLabel_8.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_8.gridx = 1;
-		gbc_lblNewLabel_8.gridy = 7;
-		add(lblNewLabel_8, gbc_lblNewLabel_8);
+		JLabel lblUsuario = new JLabel("New label");
+		GridBagConstraints gbc_lblUsuario = new GridBagConstraints();
+		gbc_lblUsuario.gridwidth = 5;
+		gbc_lblUsuario.insets = new Insets(0, 0, 0, 5);
+		gbc_lblUsuario.gridx = 1;
+		gbc_lblUsuario.gridy = 7;
+		add(lblUsuario, gbc_lblUsuario);
 
 		JButton btnUsuario = new JButton("Selecciona");
 		GridBagConstraints gbc_btnUsuario = new GridBagConstraints();
-		gbc_btnUsuario.insets = new Insets(0, 0, 5, 0);
+		gbc_btnUsuario.insets = new Insets(0, 0, 0, 5);
 		gbc_btnUsuario.gridx = 6;
 		gbc_btnUsuario.gridy = 7;
 		add(btnUsuario, gbc_btnUsuario);
 
 		sincronizarSpinnerYSlider();
+		cargarPrimero();
 	}
 
 	public void sincronizarSpinnerYSlider() {
@@ -213,9 +236,41 @@ public class PanelPrincipal extends JPanel {
 			public void stateChanged(ChangeEvent e) {
 				int valorMaximo = (int) jspinner.getValue();
 				jslider.setMaximum(valorMaximo);
-
+				lblSlider.setText(String.valueOf(valorMaximo));
 			}
 		});
+	}
+	private JFormattedTextField getJFormattedTextFieldDatePersonalizado() {
+		 jftf = new JFormattedTextField(
+				new JFormattedTextField.AbstractFormatter() {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+			@Override
+			public String valueToString(Object value) throws ParseException {
+				if (value != null && value instanceof Date) {
+					return sdf.format(((Date) value));
+				}
+				return "";
+			}
+
+			@Override
+			public Object stringToValue(String text) throws ParseException {
+				try {
+					return sdf.parse(text);
+				} catch (Exception e) {
+					jftf.setBackground(Color.RED);
+					JOptionPane.showMessageDialog(null, "Error en la fecha");
+					jftf.setBackground(Color.WHITE);
+					return null;
+				}
+			}
+		});
+		jftf.setColumns(20);
+		jftf.setValue(new Date());
+		return jftf;
+	}
+	private void cargarPrimero() {
+	 ControladorContratoJPA.getInstance().findFirst();
 	}
 
 }

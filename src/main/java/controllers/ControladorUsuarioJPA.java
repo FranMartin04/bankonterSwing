@@ -13,7 +13,7 @@ public class ControladorUsuarioJPA extends SuperControladorJPA {
 	
 	
 	public ControladorUsuarioJPA() {
-		super("usuario", Usuario.class);
+		super(Usuario.class, "usuario");
 	}
 	
 	
