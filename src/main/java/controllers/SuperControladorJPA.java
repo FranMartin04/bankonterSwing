@@ -199,7 +199,7 @@ public class SuperControladorJPA {
 	/**
 	 * 
 	 */
-	public List<Entidad> findAll () {
+	public List<? extends Entidad>  findAll () {
 		EntityManager em = getEntityManagerFactory().createEntityManager();
 
 		TypedQuery<Entidad> q = em.createQuery("SELECT e FROM " + this.nombreEntidadControlada + " e", this.entidadControlada);

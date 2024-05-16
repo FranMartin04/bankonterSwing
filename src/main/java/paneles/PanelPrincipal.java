@@ -18,10 +18,10 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
 import controllers.ControladorContratoJPA;
 import entities.Contrato;
-
+import entities.Tipocontrato;
+import entities.Usuario;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -43,7 +43,8 @@ public class PanelPrincipal extends JPanel {
 	private JSlider jslider;
 	private JLabel lblSlider;
 	private JFormattedTextField jftf;
-	private static List<Contrato> contratos = null;
+	private JLabel lblUsuario;
+	private Contrato ultimoContratoCargado;
 
 	/**
 	 * Create the panel.
@@ -75,36 +76,63 @@ public class PanelPrincipal extends JPanel {
 		add(toolBar, gbc_toolBar);
 
 		JButton btnStart = new JButton("");
-		btnStart.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/gotostart.png"));
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cargarPrimero();
+			}
+		});
+		btnStart.setIcon(new ImageIcon(
+				"/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/gotostart.png"));
 		toolBar.add(btnStart);
 
 		JButton btnPrevio = new JButton("");
-		btnPrevio.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/previous.png"));
+		btnPrevio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cargarAnterior();
+			}
+		});
+		btnPrevio.setIcon(new ImageIcon(
+				"/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/previous.png"));
 		toolBar.add(btnPrevio);
 
 		JButton btnSiguiente = new JButton("");
-		btnSiguiente.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/next.png"));
+		btnSiguiente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cargarSiguiente();
+			}
+		});
+		btnSiguiente.setIcon(new ImageIcon(
+				"/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/next.png"));
 		toolBar.add(btnSiguiente);
-		
+
 		JButton btnUltimo = new JButton("");
-		btnUltimo.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/gotoend.png"));
+		btnUltimo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cargarUltimo();
+			}
+		});
+		btnUltimo.setIcon(new ImageIcon(
+				"/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/gotoend.png"));
 		toolBar.add(btnUltimo);
-		
+
 		JButton btnNuevo = new JButton("");
-		btnNuevo.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/nuevo.png"));
+		btnNuevo.setIcon(new ImageIcon(
+				"/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/nuevo.png"));
 		toolBar.add(btnNuevo);
-		
+
 		JButton btnGuardar = new JButton("");
-		btnGuardar.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/guardar.png"));
+		btnGuardar.setIcon(new ImageIcon(
+				"/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/guardar.png"));
 		toolBar.add(btnGuardar);
-		
+
 		JButton btnEliminar = new JButton("");
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 			}
 		});
-		btnEliminar.setIcon(new ImageIcon("/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/eliminar.png"));
+		btnEliminar.setIcon(new ImageIcon(
+				"/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/eliminar.png"));
 		toolBar.add(btnEliminar);
 
 		JLabel lblNewLabel = new JLabel("Contrato");
@@ -181,7 +209,7 @@ public class PanelPrincipal extends JPanel {
 		gbc_jslider.gridx = 1;
 		gbc_jslider.gridy = 5;
 		add(jslider, gbc_jslider);
-		
+
 		lblSlider = new JLabel("");
 		GridBagConstraints gbc_lblSlider = new GridBagConstraints();
 		gbc_lblSlider.insets = new Insets(0, 0, 5, 0);
@@ -211,20 +239,21 @@ public class PanelPrincipal extends JPanel {
 		JButton btnTipoContrato = new JButton("Selecciona");
 		btnTipoContrato.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-        		JDialog dialogo = new JDialog();
+				JDialog dialogo = new JDialog();
 				// El usuario no puede redimensionar el diálogo
 				dialogo.setResizable(true);
 				// título del díalogo
 				dialogo.setTitle("Tipo Contrato");
 				// Introducimos el panel creado sobre el diálogo
 				dialogo.setContentPane(new PanelTipoContrato());
-				// Empaquetar el di�logo hace que todos los componentes ocupen el espacio que deben y el lugar adecuado
+				// Empaquetar el di�logo hace que todos los componentes ocupen el espacio que
+				// deben y el lugar adecuado
 				dialogo.pack();
 				// El usuario no puede hacer clic sobre la ventana padre, si el Di�logo es modal
 				dialogo.setModal(true);
 				// Centro el di�logo en pantalla
-				dialogo.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - dialogo.getWidth()/2, 
-						(Toolkit.getDefaultToolkit().getScreenSize().height)/2 - dialogo.getHeight()/2);
+				dialogo.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width) / 2 - dialogo.getWidth() / 2,
+						(Toolkit.getDefaultToolkit().getScreenSize().height) / 2 - dialogo.getHeight() / 2);
 				// Muestro el di�logo en pantalla
 				dialogo.setVisible(true);
 			}
@@ -243,7 +272,7 @@ public class PanelPrincipal extends JPanel {
 		gbc_lblNewLabel_7.gridy = 7;
 		add(lblNewLabel_7, gbc_lblNewLabel_7);
 
-		JLabel lblUsuario = new JLabel("New label");
+		lblUsuario = new JLabel("New label");
 		GridBagConstraints gbc_lblUsuario = new GridBagConstraints();
 		gbc_lblUsuario.gridwidth = 5;
 		gbc_lblUsuario.insets = new Insets(0, 0, 0, 5);
@@ -254,20 +283,21 @@ public class PanelPrincipal extends JPanel {
 		JButton btnUsuario = new JButton("Selecciona");
 		btnUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-        		JDialog dialogo = new JDialog();
+				JDialog dialogo = new JDialog();
 				// El usuario no puede redimensionar el diálogo
 				dialogo.setResizable(true);
 				// título del díalogo
 				dialogo.setTitle("Usuario");
 				// Introducimos el panel creado sobre el diálogo
 				dialogo.setContentPane(new PanelUsuario());
-				// Empaquetar el di�logo hace que todos los componentes ocupen el espacio que deben y el lugar adecuado
+				// Empaquetar el di�logo hace que todos los componentes ocupen el espacio que
+				// deben y el lugar adecuado
 				dialogo.pack();
 				// El usuario no puede hacer clic sobre la ventana padre, si el Di�logo es modal
 				dialogo.setModal(true);
 				// Centro el di�logo en pantalla
-				dialogo.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - dialogo.getWidth()/2, 
-						(Toolkit.getDefaultToolkit().getScreenSize().height)/2 - dialogo.getHeight()/2);
+				dialogo.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width) / 2 - dialogo.getWidth() / 2,
+						(Toolkit.getDefaultToolkit().getScreenSize().height) / 2 - dialogo.getHeight() / 2);
 				// Muestro el di�logo en pantalla
 				dialogo.setVisible(true);
 			}
@@ -292,9 +322,9 @@ public class PanelPrincipal extends JPanel {
 			}
 		});
 	}
+
 	private JFormattedTextField getJFormattedTextFieldDatePersonalizado() {
-		 jftf = new JFormattedTextField(
-				new JFormattedTextField.AbstractFormatter() {
+		jftf = new JFormattedTextField(new JFormattedTextField.AbstractFormatter() {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 			@Override
@@ -321,27 +351,65 @@ public class PanelPrincipal extends JPanel {
 		jftf.setValue(new Date());
 		return jftf;
 	}
-	public static List<Contrato> getPrimerContrato () {
-		if (contratos == null) {
-			contratos = (List<Contrato>) ControladorContratoJPA
-					.getInstance().findFirst();
-		}
-		return contratos;
 
-	}
-	
 	/**
 	 * 
 	 * @return
 	 */
-	public void cargarPrimero() {
-
-		List<Contrato> contratos = getPrimerContrato();
-		Contrato primerContrato = contratos.get(0);
-        jtfDescripcion.setText(primerContrato.getDescripcion());
-
-
+	public void cargarContrato(Contrato contrato) {
+	    jtfDescripcion.setText(contrato.getDescripcion());
+	    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	    String fechaFormateada = sdf.format(contrato.getFechaFirma());
+	    jftf.setText(fechaFormateada);
+	    // jspinner.setValue(contrato.getSaldo());
+	    jslider.setValue((int) contrato.getLimite());
+	    Tipocontrato tipoContrato = contrato.getTipocontrato();
+	    String textoTipoContrato = tipoContrato.getId() + "-" + tipoContrato.getDescripcion();
+	    jtfTipoContrato.setText(textoTipoContrato);
+	    Usuario usuario = contrato.getUsuario();
+	    String textoUsuario = usuario.getId() + "-" + usuario.getNombreUsuario();
+	    lblUsuario.setText(textoUsuario);
 	}
+
+	public void cargarPrimero() {
+        Contrato primerContrato = (Contrato) ControladorContratoJPA.getInstance().findFirst();
+        cargarContrato(primerContrato);
+        ultimoContratoCargado = primerContrato; // Guardar referencia al último contrato cargado
+    }
+
+    public void cargarUltimo() {
+        Contrato ultimoContrato = (Contrato) ControladorContratoJPA.getInstance().findLast();
+        cargarContrato(ultimoContrato);
+        ultimoContratoCargado = ultimoContrato; // Guardar referencia al último contrato cargado
+    }
+
+    public void cargarSiguiente() {
+        if (ultimoContratoCargado == null) {
+            cargarPrimero();
+        } else {
+            // Obtenemos el siguiente contrato después del último cargado
+            Contrato siguienteContrato = (Contrato) ControladorContratoJPA.getInstance().findNext(ultimoContratoCargado);
+            if (siguienteContrato != null) {
+                cargarContrato(siguienteContrato);
+                ultimoContratoCargado = siguienteContrato;
+            } 
+  
+        }
+    }
+    public void cargarAnterior() {
+    	if (ultimoContratoCargado == null) {
+            cargarPrimero();
+        } else {
+            // Obtenemos el siguiente contrato después del último cargado
+            Contrato siguienteContrato = (Contrato) ControladorContratoJPA.getInstance().findPrevious(ultimoContratoCargado);
+            if (siguienteContrato != null) {
+                cargarContrato(siguienteContrato);
+                ultimoContratoCargado = siguienteContrato;
+            } 
+  
+        }
+    }
+	
 
 
 }
