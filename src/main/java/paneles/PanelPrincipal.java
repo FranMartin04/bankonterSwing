@@ -46,6 +46,7 @@ public class PanelPrincipal extends JPanel {
 	private JLabel lblUsuario;
 	private Contrato ultimoContratoCargado;
 
+	
 	/**
 	 * Create the panel.
 	 */
