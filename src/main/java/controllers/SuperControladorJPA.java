@@ -194,6 +194,7 @@ public class SuperControladorJPA {
 			return null;
 		}
 	}
+
 	
 	
 	/**
@@ -209,6 +210,7 @@ public class SuperControladorJPA {
 		em.close();
 		return entidades;
 	}
+
 
 }
 

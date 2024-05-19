@@ -18,7 +18,10 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+
 import controllers.ControladorContratoJPA;
+import controllers.ControladorTipoContratoJPA;
+import controllers.ControladorUsuarioJPA;
 import entities.Contrato;
 import entities.Tipocontrato;
 import entities.Usuario;
@@ -45,6 +48,7 @@ public class PanelPrincipal extends JPanel {
 	private JFormattedTextField jftf;
 	private JLabel lblUsuario;
 	private Contrato ultimoContratoCargado;
+	private Contrato currentEntity = null;
 
 	
 	/**
@@ -122,6 +126,11 @@ public class PanelPrincipal extends JPanel {
 		toolBar.add(btnNuevo);
 
 		JButton btnGuardar = new JButton("");
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				saveEntity();
+			}
+		});
 		btnGuardar.setIcon(new ImageIcon(
 				"/home/diurno/git/tutorialjava2023-24-maven/src/main/java/tutorialJava/capitulo9_AWT_SWING/res/guardar.png"));
 		toolBar.add(btnGuardar);
@@ -290,7 +299,7 @@ public class PanelPrincipal extends JPanel {
 				// título del díalogo
 				dialogo.setTitle("Usuario");
 				// Introducimos el panel creado sobre el diálogo
-				dialogo.setContentPane(new PanelUsuario());
+				//dialogo.setContentPane(new PanelSeleccionUsuario());
 				// Empaquetar el di�logo hace que todos los componentes ocupen el espacio que
 				// deben y el lugar adecuado
 				dialogo.pack();
@@ -410,7 +419,74 @@ public class PanelPrincipal extends JPanel {
   
         }
     }
-	
+    private void saveEntity() {
+		this.currentEntity.setDescripcion(this.jtfDescripcion.getText());
+		this.currentEntity.setFechaFirma(GuiUtils.getDateFromFormattedString("dd/MM/yyyy", this.jftf.getText()));
+		this.currentEntity.setLimite( ((Number) this.jspinner.getValue()).intValue() );
+		this.currentEntity.setSaldo(this.jslider.getValue());
+		
+		try {
+			ControladorContratoJPA.getInstance().save(currentEntity);
+			JOptionPane.showMessageDialog(null, "Contrato guardado correctamente");
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "NO se ha guardado el contrato. ERROR");
+		}
+	}
+    private void deleteEntity () {
+		try {
+			String respuestas[] = new String[] {"Sí", "No"};
+			int opcionElegida = JOptionPane.showOptionDialog(
+					null, 
+					"¿Realmente desea eliminar el registro?", 
+					"Eliminación de fabricante", 
+			        JOptionPane.DEFAULT_OPTION, 
+			        JOptionPane.WARNING_MESSAGE, 
+			        null, respuestas, 
+			        respuestas[1]);
+		    
+			if(opcionElegida == 0) {
+				ControladorContratoJPA.getInstance().remove(currentEntity);
+		    	  
+		    	  // Decido qué registro voy a mostrar en pantalla.
+		    	  // Voy a comprobar si existe un anterior, si existe lo muestro
+		    	  // Si no existe anterior compruebo si existe siguiente, 
+		    	  // si existe lo muestro. En caso contrario, no quedan registros
+		    	  // así que muestro en blanco la pantalla
+		    	  //this.currentEntity = ControladorContratoJPA.getInstance().findPrevious(this.currentEntity.getId());
+		    	  if (this.currentEntity != null) { // Existe un anterior, lo muestro
+		    		  cargarContrato(ultimoContratoCargado);
+		    	  }
+		    	  else {
+		    		  //this.currentEntity = ControladorContratoJPA.getInstance().findNext(this.currentEntity.getId());
+			    	  if (this.currentEntity != null) { // Existe un anterior, lo muestro
+			    		  cargarContrato(ultimoContratoCargado);
+			    	  }
+		    		  else { // No quedan registros en la tabla
+		    			  newEntity();
+		    		  }
+		    	  }
+		      }
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}
+    private void newEntity () {
+		this.currentEntity = new Contrato();
+		this.currentEntity.setId(0);
+		//this.currentEntity.setTipocontrato(ControladorTipoContratoJPA.getInstance().findById(1));
+		//this.currentEntity.setUsuario(ControladorUsuarioJPA.getInstance().findById(1));
+		
+		cargarContrato(currentEntity);
+	}
+    public void setUsuario (Usuario u) {
+		if (u != null) {
+			this.currentEntity.setUsuario(u);
+			this.lblUsuario.setText(u.toString());
+		}
+	}
 
 
 }
